@@ -1,11 +1,16 @@
-// db.js
-const path = require("path");
-const Database = require("better-sqlite3");
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
 
-// 💾 Absolute path to your actual database file
-const dbPath = path.resolve(__dirname, "onde.db");
+// Point to the correct DB file
+const dbPath = path.join(__dirname, 'onde.db');
 
-console.log("🗂️ Using DB at:", dbPath);
+// Open connection
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error("❌ Failed to connect to database:", err.message);
+  } else {
+    console.log("✅ Connected to SQLite database at:", dbPath);
+  }
+});
 
-const db = new Database(dbPath);
 module.exports = db;
