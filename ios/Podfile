@@ -1,0 +1,58 @@
+# Resolve react_native_pods.rb with node to allow for hoisting
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    {paths: [process.argv[1]]},
+  )', __dir__]).strip
+
+platform :ios, min_ios_version_supported
+prepare_react_native_project!
+
+# Flipper configuration
+flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
+
+# Framework linkage mode
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}-linked Frameworks".green
+  use_frameworks! :linkage => linkage.to_sym
+end
+
+target 'OndeApp' do
+  config = use_native_modules!
+
+  # Firebase modules
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+
+  # Google Maps modules for iOS
+  pod 'GoogleMaps', '~> 7.0.0'
+  pod 'GooglePlaces', '~> 7.0.0'
+
+  # react-native-maps integration
+  rn_maps_path = '../node_modules/react-native-maps'
+  pod 'react-native-google-maps', :path => rn_maps_path
+
+  # Optional Hermes flag (if you're using Hermes)
+  $RNFirebaseAsStaticFramework = true
+  use_react_native!(
+    :path => config[:reactNativePath],
+    :hermes_enabled => true,
+    # :flipper_configuration => flipper_config,
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
+  )
+
+  target 'OndeAppTests' do
+    inherit! :complete
+    # Pods for testing
+  end
+
+  post_install do |installer|
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false
+    )
+  end
+end

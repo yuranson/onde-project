@@ -1,0 +1,19 @@
+{
+  "name": "onde-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Yuran Son Antonio",
+  "license": "ISC",
+  "description": "Onde backend API server",
+  "dependencies": {
+    "better-sqlite3": "^11.9.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}
