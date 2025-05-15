@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">Onde</string>
-    <string name="default_notification_channel_id">channel-id-1</string>
-    <string name="facebook_app_id">687552789953017</string>
-    <string name="fb_login_protocol_scheme">fb1234</string> 
-    <string name="facebook_client_token">56789</string>
-</resources>
